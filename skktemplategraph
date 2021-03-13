@@ -1,0 +1,148 @@
+string sconvert(ll int n)
+{
+	stringstream ss;
+	ss<<n;
+	string str = ss.str();
+	return str;
+}
+bool sortbysec(const pair<int,int> &a, 
+              const pair<int,int> &b) 
+{ 
+    return (a.second > b.second); 
+}
+ 
+template<typename T>
+void imax(T &x,T y){
+	x = max(x,y);
+}
+template<typename T>
+void imin(T &x,T y){
+	x = min(x,y);
+}
+ 
+      int n;
+      int m;
+      ll int x;
+      ll int y;
+      ll int flag=0;
+template<typename T>
+class Graph{
+    unordered_map<T, list<pair<T,pair<ll int,ll int>>>> m;
+    
+public:
+ 
+    void addEdge(T u,T v,pair<ll int,ll int> dist,bool bidir=true){
+        m[u].push_back(make_pair(v,dist)); 
+        if(bidir){
+            m[v].push_back(make_pair(u,dist));
+        }
+        
+    }
+    void dijkstra(T src){
+        
+        unordered_map<T,ll int> dist;
+        
+        //Set all distance to infinity
+        for(auto j:m){
+            dist[j.first] = 1e18;
+        }
+        
+        //Make a set to find a out node with the minimum distance
+        set<pair<ll int, T> > s;
+        
+        dist[src] = 0;
+        s.insert(make_pair(0,src));
+        
+        while(!s.empty()){
+            
+            //Find the pair at the front.
+            auto p =   *(s.begin());
+            T node = p.second;
+            
+            ll int nodeDist = p.first;
+            s.erase(s.begin());
+            
+            
+            //Iterate over neighbours/children of the current node
+            for(auto childPair: m[node]){
+                
+                ll int curk = childPair.second.second;
+                ll int movetime  = childPair.second.first;
+                ll int thisisit = ((nodeDist+curk-1)/curk)*curk+ movetime;
+                if(thisisit < dist[childPair.first]){
+                    
+                    
+                    //In the set updation of a particular is not possible
+                    // we have to remove the old pair, and insert the new pair to simulation updation
+                    T dest = childPair.first;
+                    auto f = s.find( make_pair(dist[dest],dest));
+                    if(f!=s.end()){
+                        s.erase(f);
+                    }
+                    
+                    //Insert the new pair
+                    dist[dest] = thisisit;
+                    s.insert(make_pair(dist[dest],dest));
+                    
+                }
+                
+            }
+        }
+        //Lets print distance to all other node from src
+        if(dist.find(y)==dist.end() or dist[y]==1e18){
+        	cout<<-1<<endl;
+        	flag=1;
+        }
+        else{
+           cout<<dist[y]<<endl; 
+           flag=1;
+        }
+        // if(dist[y])
+    }
+ 
+};
+ 
+void  single()
+{
+	
+	  Graph<ll int> g;
+      cin>>n;
+      cin>>m;
+      cin>>x;
+      cin>>y;
+      For(i,0,m){
+      	ll int u;
+      	cin>>u;
+      	ll int v;
+      	cin>>v;
+      	ll int t;
+      	cin>>t;
+      	ll int k;
+      	cin>>k;
+      	g.addEdge(u,v,make_pair(t,k),true);
+      }
+      g.dijkstra(x);
+      if(!flag){
+      	cout<<0<<endl;
+      	return;
+      }
+    // For(i,1,4){
+    // 	cout<<g.dist[i]<<" ";
+    // }
+	return;
+}
+void multiple()
+{
+	testcases
+    {
+		single();
+	}
+}
+ 
+int main()
+{
+  IOS;
+ // freopen("input.txt","r",stdin);
+  //freopen("output.txt","w",stdout);
+  single();
+}
